@@ -1,0 +1,11 @@
+import React from 'react'
+
+const Person = (props) => {
+    return(
+        
+        <li key={props.person.name}id={props.person.id}> {props.person.name} {props.person.number}  </li>
+        
+    )
+}
+
+export default Person

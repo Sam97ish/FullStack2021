@@ -1,19 +1,42 @@
 import React, { useState } from 'react'
+import Persons from'./components/Persons'
+import Addforum from './components/AddpersonForm'
+import Filter from './components/Filter'
+
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
+
   const [ newName, setNewName ] = useState('')
+
+  const [newNumber, setNumber] = useState('')
+
+  const [search, setSearch] = useState('')
+  
 
   const handleName = (event) => {
     setNewName(event.target.value)
   }
 
-  const addPerson = (event) =>{
+  const handleNumber = (event) => {
+    setNumber(event.target.value)
+  }
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value)
+  }
+
+
+  const AddPerson = (event) =>{
     event.preventDefault()
     let persObject = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
 
     let personsCp = [...persons]
@@ -27,31 +50,22 @@ const App = () => {
 
   }
 
-  const Person = (props) => {
-    return(
-      <>
-          {props.persons.map(person => 
-            <p key={person.name}> {person.name} </p>)} 
-      </>
-    )
-  }
+
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input 
-                  value={newName}
-                  onChange={handleName}
-                />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+
+        <Filter search={search} handleSearch={handleSearch}/>
+
+      <h2> Add a new </h2>
+
+      <Addforum AddPerson={AddPerson} newName={newName} handleName={handleName} newNumber={newNumber} handleNumber={handleNumber} />
+
       <h2>Numbers</h2>
-      <Person persons={persons}/>
+
+      <Persons persons={persons} search={search}/>
+
     </div>
   )
 }
