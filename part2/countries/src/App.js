@@ -3,11 +3,14 @@ import axios from 'axios'
 import Filter from './components/Filter';
 import Result from './components/Result';
 
+
+
 function App() {
 
   const [search, setSearch] = useState('')
 
   const [countries, setCountries] = useState([])
+
 
   const handleSearch = (event) => {
     setSearch(event.target.value)
@@ -25,10 +28,23 @@ function App() {
       })
   }, [])
 
+/*
+  useEffect(()=>{
+    let sec = selected
+    setSelected('')
+
+    let candidateCountry = countries.filter(country => country.name.common.toLowerCase().match(sec.toLowerCase()))
+
+    setView(<CountryView country={candidateCountry[0]} />)
+        
+  }, [selected])
+*/
+
+
   return (
     <div>
       <Filter search={search} handleSearch={handleSearch} />
-      <Result search={search} countries={countries} />
+      <Result search={search} countries={countries} setSearch={setSearch}/>
     </div>
   );
 }

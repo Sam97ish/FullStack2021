@@ -5,15 +5,19 @@ import CountryList from "./CountryList";
 const Result = (props) => {
     let candidateList = props.countries.filter(country => country.name.common.toLowerCase().match(props.search.toLowerCase()))
 
+    //if(props.selected !== ''){
+
+
+    //}
     if(candidateList.length === 1){
         
         return(
-        <CountryView country={candidateList[0]}/>
+        <CountryView country={candidateList[0]} />
         )
 
     }else if(candidateList.length <= 10){
         return(
-            <CountryList countryls={candidateList}/>
+            <CountryList countryls={candidateList} setSearch={props.setSearch}/>
             )
 
     }else{
