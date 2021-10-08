@@ -3,7 +3,7 @@ import axios from 'axios'
 import Persons from'./components/Persons'
 import Addforum from './components/AddpersonForm'
 import Filter from './components/Filter'
-
+import numberService from './services/numbers'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -36,26 +36,41 @@ const App = () => {
     }
 
     let personsCp = [...persons]
-    
-    if(personsCp.findIndex((person) => {return person.name === newName}) > -1){
-      alert(`${newName} already exists!`)
+    let persIndex = personsCp.findIndex((person) => {return person.name === newName})
+    if( persIndex > -1){
+      //alert(`${newName} already exists!`)
+      if(window.confirm(newName + " Already exists, would you like to update their number?")){
+        numberService
+        .update(persons[persIndex].id, persObject)
+        .then(personResponse => 
+          setPersons(persons.map(pers => pers.id === personResponse.id ? personResponse : pers)))
+      }
     }else{
-      personsCp = personsCp.concat(persObject)
-      setPersons(personsCp)
+      numberService
+      .create(persObject)
+      .then(person => 
+        setPersons(persons.concat(person)))
     }
 
   }
 
+  const handleDelete = (id, name) => {
+    if(window.confirm("Would you like to delete " + name+ " ?")){
+      numberService
+      .remove(id)
+      .then(person => console.log(name+" was deleted"))
+      setPersons(persons.filter(person => person.id !== id))
+
+    }
+
+  } 
 
   useEffect(()=>{
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+      numberService
+      .getall()
       .then(response => {
-        console.log('promise fulfilled')
-        let persCP = [...persons]
-        setPersons(()=> {return [...persCP].concat(response.data)})
-      })
+        console.log(response)
+        setPersons(response)})
   }, [])
 
 
@@ -72,7 +87,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={persons} search={search}/>
+      <Persons persons={persons} search={search} handleDelete={handleDelete}/>
 
     </div>
   )
