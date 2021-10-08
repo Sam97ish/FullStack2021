@@ -14,6 +14,9 @@ const App = () => {
 
   const [search, setSearch] = useState('')
   
+  const [Message, setMessage] = useState(null)
+
+  const [type, setType] = useState('')
 
   const handleName = (event) => {
     setNewName(event.target.value)
@@ -42,15 +45,42 @@ const App = () => {
       if(window.confirm(newName + " Already exists, would you like to update their number?")){
         numberService
         .update(persons[persIndex].id, persObject)
-        .then(personResponse => 
-          setPersons(persons.map(pers => pers.id === personResponse.id ? personResponse : pers)))
+        .then(personResponse => { 
+          setPersons(persons.map(pers => pers.id === personResponse.id ? personResponse : pers))
+          setMessage("Added " + newName)
+          setType("sucess")
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          }
+        ).catch(err => { 
+            setType("error")
+            setMessage("Could not update " + newName)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+        })
       }
     }else{
       numberService
       .create(persObject)
-      .then(person => 
-        setPersons(persons.concat(person)))
+      .then(person => {
+        setPersons(persons.concat(person))
+        setMessage("Added " + newName)
+        setType("sucess")
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
+      ).catch(err => { 
+          setType("error")
+          setMessage("Could not create " + newName)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+      })
     }
+
 
   }
 
@@ -58,8 +88,17 @@ const App = () => {
     if(window.confirm("Would you like to delete " + name+ " ?")){
       numberService
       .remove(id)
-      .then(person => console.log(name+" was deleted"))
+      .then(person => {console.log(name+" was deleted")
       setPersons(persons.filter(person => person.id !== id))
+      }
+      ).catch(err => { 
+        setType("error")
+        setMessage("Could not remove " + newName)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
+
 
     }
 
@@ -69,11 +108,22 @@ const App = () => {
       numberService
       .getall()
       .then(response => {
-        console.log(response)
+        //console.log(response)
         setPersons(response)})
   }, [])
 
 
+  const Notification = ({ message, type}) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className={type}>
+        {message}
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -82,7 +132,7 @@ const App = () => {
         <Filter search={search} handleSearch={handleSearch}/>
 
       <h2> Add a new </h2>
-
+      <Notification message={Message} type={type} />
       <Addforum AddPerson={AddPerson} newName={newName} handleName={handleName} newNumber={newNumber} handleNumber={handleNumber} />
 
       <h2>Numbers</h2>
