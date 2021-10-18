@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from'./components/Persons'
 import Addforum from './components/AddpersonForm'
 import Filter from './components/Filter'
@@ -55,7 +54,9 @@ const App = () => {
           }
         ).catch(err => { 
             setType("error")
-            setMessage("Could not update " + newName)
+            setMessage(JSON.stringify(err.response.data))
+            console.log(JSON.stringify(err.response.data))
+            console.log("Could not Create: " + newName)
             setTimeout(() => {
               setMessage(null)
             }, 5000)
@@ -74,7 +75,9 @@ const App = () => {
       }
       ).catch(err => { 
           setType("error")
-          setMessage("Could not create " + newName)
+          setMessage(JSON.stringify(err.response.data))
+          console.log(JSON.stringify(err.response.data))
+          console.log("Could not Create: " + newName)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
@@ -93,7 +96,9 @@ const App = () => {
       }
       ).catch(err => { 
         setType("error")
-        setMessage("Could not remove " + newName)
+        setMessage(JSON.stringify(err.response.data))
+        console.log(JSON.stringify(err.response.data))
+        console.log("Could not Delete: " + newName)
         setTimeout(() => {
           setMessage(null)
         }, 5000)
