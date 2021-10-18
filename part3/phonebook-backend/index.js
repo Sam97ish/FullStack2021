@@ -15,6 +15,7 @@ app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :response-time :content'))
 
+// eslint-disable-next-line no-unused-vars
 let persons = [
   {
     'id': 1,
