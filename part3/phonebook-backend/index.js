@@ -9,6 +9,7 @@ morgan.token('content', function getContent (req) {
 const app = express()
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :response-time :content'))
 
