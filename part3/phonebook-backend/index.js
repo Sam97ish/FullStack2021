@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res,next) => {
   Person.count({})
   .then(number => {
     let responseInfo = `<h1>Phone book has info for ${number} persons</h1> <h1> ${new Date()}</h1>`
@@ -66,9 +66,9 @@ const generateId = () => {
     return id
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
-
+/*
   let isExists = persons.find(person=> person.name === body.name)
   if (!body.name || !body.number) {
     return response.status(400).json({ 
@@ -80,16 +80,18 @@ app.post('/api/persons', (request, response) => {
         error: 'name must be unique' 
       })
   }
-
+*/
   const person = new Person({
     id: generateId(),
     name: body.name,
     number: body.number
   })
 
-  person.save().then(savedPerson => {
+  person.save()
+  .then(savedPerson => {
     response.json(savedPerson)
   })
+  .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -121,7 +123,7 @@ app.put('/api/persons/:id',  (request, response, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -152,7 +154,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {    
+    return response.status(400).json({ error: error.message })  
+  }
 
   next(error)
 }
