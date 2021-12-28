@@ -1,0 +1,12 @@
+import anecdoteReducer from './reducers/anecdoteReducer'
+import notificationReducer from './reducers/notificationReducer'
+import filterReducer from './reducers/filterReducer'
+import { createStore, combineReducers } from 'redux'
+
+const reducer = combineReducers({  anecdotes: anecdoteReducer,  notifications: notificationReducer, filter: filterReducer})
+
+const store = createStore(reducer, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )
+
+export default store
