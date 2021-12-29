@@ -9,21 +9,27 @@ const notificationReducer = (state = null, action) => {
         return state
     }
 }
+let timeoutID = 0
+export const changeNotification = (notification, time) => {
+    return async dispatch => {
 
-export const showNotification = (notification) => {
-    return {
-      type: 'SHOW_NOTIFICATION',
-      data: {
-         notification,
+        dispatch({
+            type: 'SHOW_NOTIFICATION',
+            data: {
+               notification: notification,
+            }
+        })
+        clearTimeout(timeoutID)
+        timeoutID = setTimeout(()=> 
+        dispatch({
+            type: 'SHOW_NOTIFICATION',
+            data: {
+               notification: null,
+            }
+        }),
+        1000*time)
+
       }
-    }
-}
-
-export const hideNotification = () => {
-    return {
-      type: 'SHOW_NOTIFICATION',
-      data: { notification:null }
-    }
 }
 
 export default notificationReducer

@@ -1,3 +1,4 @@
+/*
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -18,8 +19,11 @@ const asObject = (anecdote) => {
 }
 
 const initialState = anecdotesAtStart.map(asObject)
+*/
 
-const anecdoteReducer = (state = initialState, action) => {
+import anecdoteService from "../services/anecdoteService"
+
+const anecdoteReducer = (state = [], action) => {
   console.log('state now: ', state)
   //console.log('action', action)
   switch(action.type){
@@ -31,31 +35,48 @@ const anecdoteReducer = (state = initialState, action) => {
       )
     case 'NEW_ANECDOTE':
       return [...state, action.data]
-
+    
+    case 'INIT_ANECDOTES':
+      return action.data
     default:
       return state
   }
 }
 
 export const voteAnecdote = (anecdote) => {
-  return {
-    type: 'VOTE',
-    data: {
-      ...anecdote,
-      votes: anecdote.votes+1
-    }
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.update(anecdote)
+    dispatch({
+      type: 'VOTE',
+      data: {
+        ...newAnecdote,
+      }
+    })
   }
 }
 
-export const createAnecdote = (anecdote) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    data: {
-      content: anecdote,
-      id: getId(),
-      votes: 0
-    }
+export const createAnecdote = (content) => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch({
+      type: 'NEW_ANECDOTE',
+      data: {
+        ...newAnecdote
+      }
+    })
   }
 }
+
+
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: anecdotes,
+    })
+  }
+}
+
 
 export default anecdoteReducer
