@@ -8,11 +8,15 @@ const Notification = (props) => {
     padding: 10,
     borderWidth: 1
   }
-  return (
-    <div style={style}>
-      {props.notification}
-    </div>
-  )
+  if(props.notification){
+    return (
+      <div style={style}>
+        {props.notification}
+      </div>
+    )
+  }else{
+    return null
+  }
 }
 
 const mapStateToProps = (state) => {
