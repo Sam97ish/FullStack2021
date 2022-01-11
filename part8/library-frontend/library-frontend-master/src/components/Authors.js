@@ -10,7 +10,10 @@ const Authors = (props) => {
   const [born, setBorn] = useState("");
   const result = useQuery(ALL_AUTHORS);
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_AUTHORS }], 
+    onError: (error) => {
+      props.setError(error.graphQLErrors[0].message)
+    }
   });
   
   useEffect(() => {
